@@ -1,0 +1,149 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            //Creating Sample Data
+            List<RateCalendarItem> lstCalendarItem = new List<RateCalendarItem>();
+
+            RateCalendarItem calObj = new RateCalendarItem();
+
+            calObj.StayDate = new DateTime(2017, 1, 1);
+            calObj.RoomTypeId = "DLX";
+            calObj.AvailableRooms = 15;
+            calObj.RoomAmount = 15000;
+            calObj.TaxAmount = 1320;
+
+            lstCalendarItem.Add(calObj);
+
+            RateCalendarItem calObj1 = new RateCalendarItem();
+
+            calObj1.StayDate = new DateTime(2017, 1, 2);
+            calObj1.RoomTypeId = "DLX";
+            calObj1.AvailableRooms = 15;
+            calObj1.RoomAmount = 15000;
+            calObj1.TaxAmount = 1320;
+
+            lstCalendarItem.Add(calObj1);
+
+            RateCalendarItem calObj2 = new RateCalendarItem();
+
+            calObj2.StayDate = new DateTime(2017, 1, 3);
+            calObj2.RoomTypeId = "DLX";
+            calObj2.AvailableRooms = 15;
+            calObj2.RoomAmount = 15000;
+            calObj2.TaxAmount = 1320;
+
+            lstCalendarItem.Add(calObj2);
+
+            RateCalendarItem calObj3 = new RateCalendarItem();
+
+            calObj3.StayDate = new DateTime(2017, 1, 4);
+            calObj3.RoomTypeId = "DLX";
+            calObj3.AvailableRooms = 15;
+            calObj3.RoomAmount = 15000;
+            calObj3.TaxAmount = 1320;
+
+            lstCalendarItem.Add(calObj3);
+
+            RateCalendarItem calObj4 = new RateCalendarItem();
+
+            calObj4.StayDate = new DateTime(2017, 1, 5);
+            calObj4.RoomTypeId = "DLX";
+            calObj4.AvailableRooms = 15;
+            calObj4.RoomAmount = 5000;
+            calObj4.TaxAmount = 300;
+
+            lstCalendarItem.Add(calObj4);
+
+            //Calling function to Convert Basic list to Compact
+            List<RateCalendarItem2> lstCalendarItem2 = ConvertToCompactList(lstCalendarItem);
+
+            foreach(var obj in lstCalendarItem2)
+            {
+                Console.WriteLine(obj.StayDate);
+                Console.WriteLine(obj.StayDateEnd);
+            }
+
+        }
+
+        public static List<RateCalendarItem2> ConvertToCompactList(List<RateCalendarItem> lstCalendarItem)
+        {
+            //List for CalendarItem2
+            List<RateCalendarItem2> lstCalendarItem2 = new List<RateCalendarItem2>();
+
+            var currentEndDate = new DateTime();
+            var i = 0;
+
+            while (i < lstCalendarItem.Count)
+            {
+                RateCalendarItem2 cal2Obj = new RateCalendarItem2();
+                cal2Obj.StayDate = lstCalendarItem[i].StayDate;
+                cal2Obj.AvailableRooms = lstCalendarItem[i].AvailableRooms;
+                cal2Obj.RoomTypeId = lstCalendarItem[i].RoomTypeId;
+                cal2Obj.RoomAmount = lstCalendarItem[i].RoomAmount;
+                cal2Obj.TaxAmount = lstCalendarItem[i].TaxAmount;
+                currentEndDate = lstCalendarItem[i].StayDate;
+                if (i == lstCalendarItem.Count - 1)
+                {
+                    cal2Obj.StayDateEnd = lstCalendarItem[i].StayDate;
+                    lstCalendarItem2.Add(cal2Obj);
+                    break;
+                }
+
+
+                for (int j = i + 1; j < lstCalendarItem.Count; j++)
+                {
+                    if (lstCalendarItem[j].RoomAmount != lstCalendarItem[i].RoomAmount)
+                    {
+                        cal2Obj.StayDateEnd = currentEndDate;
+                        lstCalendarItem2.Add(cal2Obj);
+                        i = j;
+                        break;
+                    }
+                    else if (j == lstCalendarItem.Count - 1)
+                    {
+                        cal2Obj.StayDateEnd = lstCalendarItem[j].StayDate;
+                        lstCalendarItem2.Add(cal2Obj);
+                        i = j + 1;
+                        break;
+                    }
+                    else
+                    {
+                        currentEndDate = lstCalendarItem[j].StayDate;
+                    }
+                }
+            }
+
+            return lstCalendarItem2;
+        }
+
+        
+    }
+
+    public class RateCalendarItem
+    {
+        public DateTime StayDate { get; set; }
+        public string RoomTypeId { get; set; }
+        public int AvailableRooms { get; set; }
+        public decimal RoomAmount { get; set; }
+        public decimal TaxAmount { get; set; }
+    }
+    public class RateCalendarItem2
+    {
+        public DateTime StayDate { get; set; }
+        public DateTime StayDateEnd { get; set; }
+        public string RoomTypeId { get; set; }
+        public int AvailableRooms { get; set; }
+        public decimal RoomAmount { get; set; }
+        public decimal TaxAmount { get; set; }
+    }
+
+}
